@@ -4,111 +4,111 @@
 // (для получения постов используйте эндпоинт https://jsonplaceholder.typicode.com/users/USER_ID/posts)
 // 6 Каждому посту додати кнопку/посилання, при кліку на яку відбувається перехід на сторінку post-details.html, котра має детальну інфу про поточний пост.
 
-let userInformationBlock = document.querySelector('.user-information')
+const userInformationBlock = document.querySelector('.user-information')
+const returnBnt = document.querySelector('.return-btn')
 
-let userUrl = new URL(location.href).searchParams.get('id');
-let postLink = `https://jsonplaceholder.typicode.com/users/${userUrl}/posts`
-fetch(`https://jsonplaceholder.typicode.com/users/${userUrl}`)
+const userUrlParams = new URL(location.href).searchParams.get('id');
+const userLink = `https://jsonplaceholder.typicode.com/users/${userUrlParams}`
+const postLink = `https://jsonplaceholder.typicode.com/users/${userUrlParams}/posts`
+returnBnt.addEventListener('click', function () {
+    location.href = 'index.html'
+})
+fetch(userLink)
     .then(res => res.json())
     .then(user => {
-        let userInfo = document.createElement('div')
-        userInfo.classList.add('user')
-        userInformationBlock.appendChild(userInfo);
+        const {id, name, username, email, phone, website, address, company} = user;
+
+        const userInfo = createDomElement('div', ['user'], '', userInformationBlock);
 
         userInfo.innerHTML = `
-        <h3>ID: ${user.id} ${user.name}</h3>
-        <p>Username: ${user.username}</p>
-        <p>Email: ${user.email}</p>
-        <p>Phone: ${user.phone}</p>
-        <p>Website: ${user.website}</p>
-        <h3>Address:</h3>
+        <div class="main-info">
+            <h3>ID: ${id} ${name}</h3>
+            <p>Username: ${username}</p>
+            <p>Email: ${email}</p>
+            <p>Phone: ${phone}</p>
+            <p>Website: ${website}</p>
+        </div>
     `
-        let addressBlock = document.createElement('div')
-        addressBlock.classList.add('user-address')
-        userInfo.appendChild(addressBlock);
+        const addressBlock = createDomElement('div', ['user-address'], '', userInfo)
+        const addressHeadTitle = createDomElement('h3', '', 'Address:', addressBlock)
 
-        for (const userInfoKey in user.address) {
-            if (userInfoKey === 'geo') {
-                let geoBlock = document.createElement('div')
-                geoBlock.innerHTML = '<h4>Geo Data:</h4>'
-                addressBlock.appendChild(geoBlock);
-                for (const geoKey in user.address[userInfoKey]) {
-                    let p = document.createElement('p')
-                    p.innerHTML = `${geoKey}: ${user.address[userInfoKey][geoKey]}`
-                    geoBlock.appendChild(p)
+        for (const userAddressInfo in address) {
+            if (userAddressInfo === 'geo') {
+                const geoBlock = createDomElement('div', ['geo-block'], '', addressBlock)
+                geoBlock.innerHTML = '<h4>Geo Data:</h4>';
+
+                for (const geoKey in address[userAddressInfo]) {
+                    const p = createDomElement('p', '', '', geoBlock)
+                    p.innerHTML = `${geoKey}: ${address[userAddressInfo][geoKey]}`
                 }
             } else {
-                let p = document.createElement('p')
-                p.innerHTML = `${userInfoKey} - ${user.address[userInfoKey]}`
-                addressBlock.appendChild(p);
+                const p = createDomElement('p', '', '', addressBlock)
+                p.innerHTML = `${userAddressInfo} - ${address[userAddressInfo]}`
             }
         }
 
-        let companyBlock = document.createElement('div')
-        companyBlock.classList.add('user-company')
-        userInfo.appendChild(companyBlock);
+        const companyBlock = createDomElement('div', ['user-company'], '', userInfo)
+        const titleCompanyBlock = createDomElement('h3', '', 'Information about company', companyBlock)
 
-        let titleCompanyBlock = document.createElement('h3')
-        titleCompanyBlock.innerText = 'Information about company';
-        companyBlock.appendChild(titleCompanyBlock);
-
-        for (const userInfoKey in user.company) {
-            let p = document.createElement('p')
-            p.innerHTML = `${userInfoKey} - ${user.company[userInfoKey]}`
-            companyBlock.appendChild(p);
+        for (const userCompanyInfo in company) {
+            const p = createDomElement('p', '', '', companyBlock)
+            p.innerHTML = `${userCompanyInfo} - ${company[userCompanyInfo]}`
         }
 
-        let postButton = document.createElement('a');
-        postButton.innerText = 'Post of current user';
-        userInformationBlock.appendChild(postButton);
+        const postButton = createDomElement('a', ['button', 'post-button'], 'Show posts of current user', userInformationBlock)
+        const hidePostsButton = createDomElement('a', ['button', 'post-button', 'hidden-button'], 'Hide posts', userInformationBlock)
+
+        const postsSection = createDomElement('div', ['posts-section'], '', userInformationBlock)
 
         postButton.addEventListener('click', function () {
-            showPostsOfUser(postLink, userInformationBlock)
+            showPostsOfUser(postLink, postsSection)
+            changeButton(postButton, hidePostsButton, 'hidden-button')
         })
-        /*postButton.addEventListener('click', function () {
-            fetch(`https://jsonplaceholder.typicode.com/users/${userUrl}/posts`)
-                .then(res => res.json())
-                .then(posts => {
-                    let postsBlock = document.createElement('div')
-                    postsBlock.classList.add('posts-block')
-                    userInformationBlock.appendChild(postsBlock);
-                    for (const post of posts) {
-                        let p = document.createElement('p');
-                        p.innerText = `${post.title}`
-                        postsBlock.appendChild(p);
 
-                        let postDetails = document.createElement('a');
-                        postDetails.innerText = 'Show information about post';
-                        postsBlock.appendChild(postDetails);
-
-                        postDetails.addEventListener('click', function () {
-                            location.href = `post-details.html?id=${post.id}`;
-                        })
-                    }
-                })
-        })*/
+        hidePostsButton.addEventListener('click', function () {
+            postsSection.innerHTML = '';
+            changeButton(postButton, hidePostsButton, 'hidden-button')
+        })
 
     })
+    .catch(e => console.log(`Щось пішло не так: ${e}`))
+
 
 function showPostsOfUser(url, htmlBlock) {
+    htmlBlock.innerHTML = '';
+
     fetch(url)
         .then(res => res.json())
         .then(posts => {
-            let postsBlock = document.createElement('div')
-            postsBlock.classList.add('posts-block')
-            htmlBlock.appendChild(postsBlock);
             for (const post of posts) {
-                let p = document.createElement('p');
-                p.innerText = `${post.title}`
-                postsBlock.appendChild(p);
+                let {id, title} = post;
+                const postBlock = createDomElement('div', ['post'], '', htmlBlock)
+                const p = createDomElement('p', '', title, postBlock)
 
-                let postDetails = document.createElement('a');
-                postDetails.innerText = 'Show information about post';
-                postsBlock.appendChild(postDetails);
+                const postDetailsLink = createDomElement('a', ['post-information-button', 'button'], 'Show information about post', postBlock)
 
-                postDetails.addEventListener('click', function () {
-                    location.href = `post-details.html?id=${post.id}`;
+                postDetailsLink.addEventListener('click', function () {
+                    location.href = `post-details.html?id=${id}`;
                 })
             }
         })
+        .catch(e => console.log(`Щось пішло не так: ${e}`))
+}
+
+function changeButton(showBtn, hideBtn, nameOfClass) {
+    showBtn.classList.toggle(nameOfClass)
+    hideBtn.classList.toggle(nameOfClass);
+}
+
+function createDomElement(tagName, arrayClassList, innerText, htmlBlock) {
+    const elem = document.createElement(tagName)
+    if (Array.isArray(arrayClassList) && arrayClassList.length !== 0) {
+        elem.classList.add(...arrayClassList)
+    }
+
+    (innerText) ? elem.innerText = innerText :  elem.innerText = '';
+
+    htmlBlock.appendChild(elem);
+
+    return elem;
 }

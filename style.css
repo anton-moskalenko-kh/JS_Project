@@ -1,9 +1,11 @@
 body {
     background-color: aliceblue;
     box-sizing: border-box;
+    width: 90vw;
+    margin: 0 auto;
 }
 
-h3, p {
+h3, h4, p {
     margin: 0;
 }
 
@@ -13,7 +15,7 @@ h3, p {
     justify-content: space-evenly;
     align-items: center;
     width: 80vw;
-    margin: 0 auto;
+    margin: 20px auto 0 auto;
 }
 
 .user-block {
@@ -25,6 +27,11 @@ h3, p {
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 20px;
+    background-color: azure;
+}
+
+.user-block:hover {
+    background-color: #d3f5f5;
 }
 
 .user-block p, .user-block h3 {
@@ -51,6 +58,153 @@ h3, p {
     cursor: pointer;
     color: white;
 }
+
+/***********************/
+
+.user {
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 20px;
+    margin: 0 auto 15px auto;
+    background-color: azure;
+}
+
+.main-info, .user-address, .user-company {
+    padding: 20px;
+}
+
+.main-info h3 {
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.main-info p:nth-child(1n), .user-address p:nth-child(1n), .user-company p:nth-child(1n)  {
+    margin-bottom: 10px;
+}
+
+.user-address h3,  .user-address h4, .user-company h3{
+    margin-bottom: 10px;
+}
+
+.geo-block {
+    margin-top: 10px;
+}
+
+.post-button {
+    width: 90vw;
+    margin: 0 auto;
+    padding: 8px 0;
+    font-size: 30px;
+}
+
+.hidden-button {
+    display: none;
+}
+
+.posts-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 90vw;
+    margin: 20px auto 0 auto;
+}
+
+.post {
+    width: 18%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: azure;
+}
+
+.post:hover {
+    background-color: #d3f5f5;
+}
+
+.post p {
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.post-information-button {
+    margin-bottom: 0;
+}
+
+/*************************************************/
+
+.post-information {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 90vw;
+    font-size: 20px;
+    margin: 10px auto 15px auto;
+    background-color: azure;
+}
+
+.post-information p:nth-child(1n) {
+    padding: 0 15px;
+    margin-bottom: 10px;
+}
+
+.post-information p:first-child {
+    padding-top: 15px;
+}
+
+.comments-button {
+    width: 65%;
+    margin: 0 auto 10px auto;
+    font-size: 20px;
+}
+
+.comments-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 90vw;
+    margin: 20px auto 0 auto;
+}
+
+.comment-info {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: azure;
+}
+
+.comment-info:hover {
+    background-color: #d3f5f5;
+}
+
+.comment-info p {
+    margin-bottom: 5px;
+}
+
+.return-btn {
+    height: 80px;
+    border: 1px solid orange;
+    border-radius: 5px;
+    width: 10vw;
+    font-size: 20px;
+    background-color: orange;
+    margin: 10px 10px 10px 0;
+}
+
+.post-button-block {
+    display: flex;
+    width: 30vw;
+}
+
+
 
 
 

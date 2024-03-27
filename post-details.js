@@ -2,44 +2,83 @@
 // 7 Вивести всю, без виключення, інформацію про об'єкт post на який клікнули .
 // 8 Нижчє інформаці про пост, вивести всі коментарі поточного поста (ендпоінт  - https://jsonplaceholder.typicode.com/posts/POST_ID/comments)
 
-let postInformationBlock = document.querySelector('.post-information')
+const postInformationBlock = document.querySelector('.post-information')
+const btnUsersSelection = document.querySelector('.btn-users-selection')
+const btnUserInfo = document.querySelector('.btn-users-info')
 
-let postUrl = new URL(location.href).searchParams.get('id');
+const postUrlParams = new URL(location.href).searchParams.get('id');
+const postLink = `https://jsonplaceholder.typicode.com/posts/${postUrlParams}`;
+const commentsLink = `https://jsonplaceholder.typicode.com/posts/${postUrlParams}/comments`;
 
-fetch(`https://jsonplaceholder.typicode.com/posts/${postUrl}`)
+btnUsersSelection.addEventListener('click', function () {
+    location.href = 'index.html';
+})
+fetch(postLink)
 .then(res => res.json())
 .then(post => {
-    console.log(post);
     let {userId, id, title, body} = post;
 
     postInformationBlock.innerHTML = `
-        <p>${userId}</p>
-        <p>${id}</p>
-        <p>${title}</p>
-        <p>${body}</p>
-        <button class="comments-button">Show comments of this post</button>
+        <p>User ID: ${userId}</p>
+        <p>Post ID: ${id}</p>
+        <p>Post Title: ${title}</p>
+        <p>Main content: ${body}</p>
+        <button class="comments-button button">Show comments of this post</button>
     `
-    let commentsButton = document.querySelector('.comments-button')
+    const commentsButton = document.querySelector('.comments-button')
+
+    const hideCommentsButton = createDomElement('button', ['button', 'comments-button', 'hidden-button'], 'Hide posts', postInformationBlock)
+
+    const commentsBlock = document.querySelector('.comments-section')
     commentsButton.addEventListener('click', function () {
-        fetch(`https://jsonplaceholder.typicode.com/posts/${postUrl}/comments`)
-            .then(res => res.json())
-            .then(comments => {
-                console.log(comments)
-                let commentsBlock = document.createElement('div')
-                commentsBlock.classList.add('comments-block')
-                postInformationBlock.appendChild(commentsBlock);
-                for (const comment of comments) {
-                    let commentInfo = document.createElement('div')
-                    commentInfo.classList.add('comment-info')
-                    commentInfo.innerHTML = `
-                        <p>${comment.id}</p>
-                        <p>${comment.name}</p>
-                        <p>${comment.email}</p>
-                        <p>${comment.body}</p>
-                    `
-                    commentsBlock.appendChild(commentInfo);
-                }
-            })
+        showCommentsOfPost(commentsLink, commentsBlock)
+        changeButton(commentsButton, hideCommentsButton, 'hidden-button')
     })
-    
+
+    hideCommentsButton.addEventListener('click', function () {
+        commentsBlock.innerHTML = '';
+        changeButton(commentsButton, hideCommentsButton, 'hidden-button')
+    })
+
+    btnUserInfo.addEventListener('click', function () {
+        location.href = `user-details.html?id=${userId}`
+    })
 })
+
+function showCommentsOfPost(url, htmlBlock) {
+    htmlBlock.innerHTML = '';
+
+    fetch(url)
+        .then(res => res.json())
+        .then(comments => {
+            for (const comment of comments) {
+                let {id, name, email, body} = comment;
+                const commentInfo = createDomElement('div', ['comment-info'], '', htmlBlock)
+                commentInfo.innerHTML = `
+                        <p>ID: ${id}</p>
+                        <p>Name: ${name}</p>
+                        <p>Email: ${email}</p>
+                        <p>Content: ${body}</p>
+                    `
+            }
+        })
+        .catch(e => console.log(`Щось пішло не так: ${e}`))
+}
+
+function changeButton(showBtn, hideBtn, nameOfClass) {
+    showBtn.classList.toggle(nameOfClass)
+    hideBtn.classList.toggle(nameOfClass);
+}
+
+function createDomElement(tagName, arrayClassList, innerText, htmlBlock) {
+    const elem = document.createElement(tagName)
+    if (Array.isArray(arrayClassList) && arrayClassList.length !== 0) {
+        elem.classList.add(...arrayClassList)
+    }
+
+    (innerText) ? elem.innerText = innerText :  elem.innerText = '';
+
+    htmlBlock.appendChild(elem);
+
+    return elem;
+}
