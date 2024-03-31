@@ -5,6 +5,7 @@
 const postInformationBlock = document.querySelector('.post-information')
 const btnUsersSelection = document.querySelector('.btn-users-selection')
 const btnUserInfo = document.querySelector('.btn-users-info')
+const commentsBlock = document.querySelector('.comments-section')
 
 const postUrlParams = new URL(location.href).searchParams.get('id');
 const postLink = `https://jsonplaceholder.typicode.com/posts/${postUrlParams}`;
@@ -14,40 +15,25 @@ btnUsersSelection.addEventListener('click', function () {
     location.href = 'index.html';
 })
 fetch(postLink)
-.then(res => res.json())
-.then(post => {
-    let {userId, id, title, body} = post;
+    .then(res => res.json())
+    .then(post => {
+        let {userId, id, title, body} = post;
 
-    postInformationBlock.innerHTML = `
-        <p>User ID: ${userId}</p>
-        <p>Post ID: ${id}</p>
-        <p>Post Title: ${title}</p>
-        <p>Main content: ${body}</p>
-        <button class="comments-button button">Show comments of this post</button>
-    `
-    const commentsButton = document.querySelector('.comments-button')
+        postInformationBlock.innerHTML = `
+            <p>User ID: ${userId}</p>
+            <p>Post ID: ${id}</p>
+            <p>Post Title: ${title}</p>
+            <p>Main content: ${body}</p>
+        `
 
-    const hideCommentsButton = createDomElement('button', ['button', 'comments-button', 'hidden-button'], 'Hide posts', postInformationBlock)
-
-    const commentsBlock = document.querySelector('.comments-section')
-    commentsButton.addEventListener('click', function () {
         showCommentsOfPost(commentsLink, commentsBlock)
-        changeButton(commentsButton, hideCommentsButton, 'hidden-button')
-    })
-
-    hideCommentsButton.addEventListener('click', function () {
-        commentsBlock.innerHTML = '';
-        changeButton(commentsButton, hideCommentsButton, 'hidden-button')
-    })
-
-    btnUserInfo.addEventListener('click', function () {
-        location.href = `user-details.html?id=${userId}`
-    })
+        btnUserInfo.addEventListener('click', function () {
+            location.href = `user-details.html?id=${userId}`
+        })
 })
+    .catch(e => console.log(`Щось пішло не так: ${e}`))
 
 function showCommentsOfPost(url, htmlBlock) {
-    htmlBlock.innerHTML = '';
-
     fetch(url)
         .then(res => res.json())
         .then(comments => {
@@ -63,11 +49,6 @@ function showCommentsOfPost(url, htmlBlock) {
             }
         })
         .catch(e => console.log(`Щось пішло не так: ${e}`))
-}
-
-function changeButton(showBtn, hideBtn, nameOfClass) {
-    showBtn.classList.toggle(nameOfClass)
-    hideBtn.classList.toggle(nameOfClass);
 }
 
 function createDomElement(tagName, arrayClassList, innerText, htmlBlock) {
