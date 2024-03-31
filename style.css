@@ -157,13 +157,7 @@ h3, h4, p {
     padding-top: 15px;
 }
 
-.comments-button {
-    width: 65%;
-    margin: 0 auto 10px auto;
-    font-size: 20px;
-}
-
-.comments-section {
+.comments-block {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

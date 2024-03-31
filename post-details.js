@@ -5,7 +5,7 @@
 const postInformationBlock = document.querySelector('.post-information')
 const btnUsersSelection = document.querySelector('.btn-users-selection')
 const btnUserInfo = document.querySelector('.btn-users-info')
-const commentsBlock = document.querySelector('.comments-section')
+const commentsBlock = document.querySelector('.comments-block')
 
 const postUrlParams = new URL(location.href).searchParams.get('id');
 const postLink = `https://jsonplaceholder.typicode.com/posts/${postUrlParams}`;
